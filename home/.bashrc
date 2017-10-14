@@ -18,4 +18,5 @@ IS_ROBOT=no
 COLOR_PROMPT=yes
 
 alias vi="nvim"
+alias oh="cd $HOME/workspace/OpenHumidor/"
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
