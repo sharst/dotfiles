@@ -87,3 +87,36 @@ Plug 'w0rp/ale'
 Plug 'lifepillar/vim-solarized8' "
 call plug#end()
 colorscheme solarized8_dark
+
+" Setting ipdb breakponts
+python << EOF
+import vim
+import re
+
+ipdb_breakpoint = 'import ipdb; ipdb.set_trace()'
+
+def set_breakpoint():
+    breakpoint_line = int(vim.eval('line(".")')) - 1
+
+    current_line = vim.current.line
+    white_spaces = re.search('^(\s*)', current_line).group(1)
+
+    vim.current.buffer.append(white_spaces + ipdb_breakpoint, breakpoint_line)
+
+def remove_breakpoints():
+    op = 'g/^.*%s.*/d' % ipdb_breakpoint
+    vim.command(op)
+
+def toggle_breakpoint():
+    breakpoint_line = int(vim.eval('line(".")')) - 1
+    if 'import ipdb; ipdb.set_trace()' in vim.current.buffer[breakpoint_line]:
+        remove_breakpoints()
+    elif 'import ipdb; ipdb.set_trace()' in vim.current.buffer[breakpoint_line-1]:
+        remove_breakpoints()
+    else :
+        set_breakpoint()
+    vim.command(':w')
+
+vim.command('map <f6> :py toggle_breakpoint()<cr>')
+EOF
+
