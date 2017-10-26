@@ -120,8 +120,8 @@ bindsym XF86AudioRaiseVolume exec "pactl -- set-sink-volume alsa_output.pci-0000
 bindsym XF86AudioLowerVolume exec "pactl -- set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -10%"
 
 # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
 
 # Scratchpad
 bindsym Mod1+Shift+minus move scratchpad
