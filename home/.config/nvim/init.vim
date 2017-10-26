@@ -1,4 +1,4 @@
-" Map the leader key to SPACE
+" Map the leader key to SPACE 
 let mapleader="\<SPACE>"
 
 set showcmd             " Show (partial) command in status line.
@@ -87,6 +87,19 @@ Plug 'w0rp/ale'
 Plug 'lifepillar/vim-solarized8' "
 call plug#end()
 colorscheme solarized8_dark
+
+" FZF config
+let g:fzf_nvim_statusline = 0 " disable statusline overwriting
+nnoremap <silent> <leader> f :Files<CR>
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+endif
+
+" bind K to grep word under cursor
+nnoremap <silent> K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
 
 " Setting ipdb breakponts
 python << EOF
