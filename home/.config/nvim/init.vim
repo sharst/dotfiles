@@ -11,6 +11,7 @@ set textwidth=0         " Hard-wrap long lines as you type them.
 set expandtab           " Insert spaces when TAB is pressed.
 set tabstop=2           " Render TABs using this many spaces.
 set shiftwidth=2        " Indentation amount for < and > commands.
+set nowrap              " Do not wrap text
 
 set noerrorbells        " No beeps.
 set modeline            " Enable modeline.
@@ -75,6 +76,9 @@ let g:deoplete#enable_at_startup = 1
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚠'
 let g:ale_lint_delay = 1000
+
+" Disable bracketing paste
+set t_BE=
 
 call plug#begin('~/.config/nvim/plugged')
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
