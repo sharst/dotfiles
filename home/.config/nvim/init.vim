@@ -83,7 +83,7 @@ set t_BE=
 call plug#begin('~/.config/nvim/plugged')
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-jedi'
-Plug 'davidhalter/jedi-vim'  "python features for vim like jump to definition
+" Plug 'davidhalter/jedi-vim'  "python features for vim like jump to definition
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc --no-completion' } "FZF command line tool
 Plug 'junegunn/fzf.vim' "corresponding vim plugin to fzf
 Plug 'hynek/vim-python-pep8-indent' "Better intentat for .py files
@@ -92,9 +92,15 @@ Plug 'lifepillar/vim-solarized8' "
 call plug#end()
 colorscheme solarized8_dark
 
+" Open split bright or left
+nnoremap <leader>l :vsp<CR>:Files<CR>
+nnoremap <leader>h :rightb<space>vsp<CR><C-w>h:Files<CR>
+
+let g:jedi#show_call_signatures=0
+
 " FZF config
 let g:fzf_nvim_statusline = 0 " disable statusline overwriting
-nnoremap <silent> <leader> f :Files<CR>
+nnoremap <silent><leader>f :Files<CR>
 " The Silver Searcher
 if executable('ag')
   " Use ag over grep
