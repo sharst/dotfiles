@@ -1,6 +1,7 @@
 [global_config]
   smart_copy = False
 [keybindings]
+  help = None
   next_tab = <Primary>Tab
   prev_tab = <Primary><Shift>Tab
 [layouts]
