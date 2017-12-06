@@ -38,6 +38,7 @@ battery 1 {
         integer_battery_capacity = true
         status_bat = 🔋
         status_chr = ⚡
+        status_full = F
         low_threshold = 17
         threshold_type = percentage
 }
