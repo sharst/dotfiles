@@ -20,3 +20,5 @@ COLOR_PROMPT=yes
 alias vi="nvim"
 alias oh="cd $HOME/workspace/OpenHumidor/"
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+ssh-add > /dev/null
+synclient TapButton1=0
