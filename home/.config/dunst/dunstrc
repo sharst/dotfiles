@@ -1,0 +1,44 @@
+[global]
+    font = Ubuntu Mono Regular 10
+
+    allow_markup = yes
+
+    format = "%b"
+    sort = yes
+    indicate_hidden = yes
+    alignment = center
+
+    bounce_freq = 0
+    show_age_threshold = 60
+    word_wrap = no
+    ignore_newline = yes
+
+    # geometry [{width}]x{height}][+/-{x}+/-{y}]
+    geometry = "1000x1+460-0"
+    shrink = no
+
+    transparency = 100
+    idle_threshold = 120
+    monitor = 0
+
+    follow = none
+    sticky_history = yes
+    history_length = 20
+    show_indicators = yes
+    line_height = 0
+    separator_height = 0
+    padding = 0
+    horizontal_padding = 0
+    frame_width = 0
+
+    startup_notification = false
+
+    dmenu = /usr/bin/dmenu -p dunst:
+browser = /usr/bin/firefox -new-tab
+
+[urgency_low]
+    background = "#000000"
+[urgency_normal]
+    background = "#000000"
+[urgency_çritical]
+    background = "#000000"
