@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+from IPython.terminal.prompts import Prompts, Token
+
 # Configuration file for ipython.
 
 c = get_config()
@@ -23,14 +26,24 @@ c.TerminalInteractiveShell.deep_reload = False
 # Automatically call the pdb debugger after every exception.
 c.TerminalInteractiveShell.pdb = False
 
-# Output prompt. '\#' will be transformed to the prompt number
-# c.PromptManager.out_template = 'Out[\\#]: '
-c.PromptManager.out_template = '< '
 
-# Continuation prompt.
-# c.PromptManager.in2_template = '   .\\D.: '
+class SimplePrompts(Prompts):
+    def in_prompt_tokens(self, cli=None):
+        return [
+            (Token.Prompt, u' >>> '),
+        ]
 
-# Input prompt.  '\#' will be transformed to the prompt number
-#c.PromptManager.in_template = 'In [\\#]: '
-c.PromptManager.in_template = '> '
+    def continuation_prompt_tokens(self, cli=None, width=None):
+        if width is None:
+            width = self._width()
+        return [
+            (Token.Prompt, (' ' * (width - 2)) + ">"),
+        ]
 
+    def out_prompt_tokens(self):
+        return [
+            (Token.Prompt, u' <<< '),
+        ]
+
+#  Use IPython v5+ new API:
+c.TerminalInteractiveShell.prompts_class = SimplePrompts
