@@ -124,6 +124,8 @@ bindsym XF86AudioLowerVolume exec "pactl -- set-sink-volume alsa_output.pci-0000
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
 
+bindsym XF86Display exec ~/.screenlayout/laptop.sh
+
 # Scratchpad
 bindsym Mod1+Shift+minus move scratchpad
 bindsym Mod1+minus scratchpad show
