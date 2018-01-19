@@ -1,9 +1,9 @@
 [global]
     font = Ubuntu Mono Regular 10
 
-    allow_markup = yes
+    markup = full
 
-    format = "%b"
+    format = "<b>%s</b> %b"
     sort = yes
     indicate_hidden = yes
     alignment = center
@@ -19,6 +19,7 @@
 
     transparency = 100
     idle_threshold = 120
+    always_run_script = true
     monitor = 0
 
     follow = none
@@ -42,3 +43,9 @@ browser = /usr/bin/firefox -new-tab
     background = "#000000"
 [urgency_çritical]
     background = "#000000"
+
+[script-test]
+    # This notification will not be displayed
+    summary = "*Magazino*"
+    format = ""
+    script = dunst_strip.py
