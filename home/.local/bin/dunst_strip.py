@@ -1,18 +1,28 @@
 #!/usr/bin/python
-""" Relay a notification, but replace keyword """
+""" Parse and relay a notification """
 import sys
-import subprocess
+import os
 
-replace = {' (Magazino)': '',
-           ' (Deploy Fiege)': ' #fiege',
-           ' (Emergency Room)': ' #em',
-           ' (Deployment)': ' #deploy',
-           ' (Mastering Statistics)': ' #statistics',
-           ' (Map Alignment Task Force)', ' #maps'}
+def message(title, message, urgency='NORMAL'):
+    os.system('notify-send "{}" "{}" --urgency={}'.format(title, message, urgency))
+
+replace = {' (Magazino)': ''}
 
 appname, summary, body, icon, urgency = sys.argv[1:]
 
-for keyword, replaceword in replace.iteritems():
-    summary = summary.replace(keyword, replaceword)
+try:
+    # Split into summary and roomname, make roomname
+    # lower case initials with hashtag prefix
+    summary, rn = summary.split(" - ")
+    rn = '#' + ''.join([r[0] for r in rn.split(' ')]).lower()
 
-subprocess.call(["notify-send", summary, body])
+    # Replace arbitrary items
+    for keyword, replaceword in replace.iteritems():
+        summary = summary.replace(keyword, replaceword)
+
+    # Room name in italics
+    summary = summary + " <i>" + rn + "</i>"
+except:
+    pass
+
+message(summary, body, urgency)
