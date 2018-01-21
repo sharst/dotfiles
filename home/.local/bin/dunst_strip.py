@@ -1,6 +1,7 @@
 #!/usr/bin/python
 """ Parse and relay a notification """
 import sys
+import re
 import os
 
 def message(title, message, urgency='NORMAL'):
@@ -15,13 +16,18 @@ try:
     # lower case initials with hashtag prefix
     summary, rn = summary.split(" - ")
     rn = '#' + ''.join([r[0] for r in rn.split(' ')]).lower()
+    # Room name in italics
+    summary = summary + " <i>" + rn + "</i>"
+except:
+    pass
 
+try:
     # Replace arbitrary items
     for keyword, replaceword in replace.iteritems():
         summary = summary.replace(keyword, replaceword)
 
-    # Room name in italics
-    summary = summary + " <i>" + rn + "</i>"
+    # Replace stuff in brackets
+    body = re.sub('\[.*\]', '', body)
 except:
     pass
 
