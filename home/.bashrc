@@ -19,8 +19,6 @@ COLOR_PROMPT=yes
 
 alias vi="nvim"
 alias oh="cd $HOME/workspace/OpenHumidor/"
-alias hc='chromium-browser --app="http://magazino.hipchat.com/chat" &'
-alias deez='chromium-browser --app="http://www.deezer.com" &'
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 ssh-add > /dev/null
 synclient TapButton1=0
