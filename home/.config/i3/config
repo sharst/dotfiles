@@ -58,6 +58,18 @@ mode "$mode_system" {
 }
 bindsym Mod1+Shift+e mode "$mode_system"
 
+set $mode_screen Screen config (l) laptop, (t) TV, (d) dual, (e) external
+mode "$mode_screen" {
+    bindsym l exec ~/.screenlayout/laptop.sh, mode "default"
+    bindsym t exec ~/.screenlayout/tv.sh, mode "default"
+    bindsym d exec ~/.screenlayout/dual.sh, mode "default"
+    bindsym e exec ~/.screenlayout/external.sh, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym Mod1+Shift+s mode "$mode_screen"
 
 # start dmenu (a program launcher)
 bindsym Mod1+d exec dmenu_run
