@@ -7,7 +7,8 @@ import os
 def message(title, message, urgency='NORMAL'):
     os.system('notify-send "{}" "{}" --urgency={}'.format(title, message, urgency))
 
-replace = {' (Magazino)': ''}
+summary_replace = {' (Magazino)': ''}
+body_replace = {'magazino.hipchat.com': ''}
 
 appname, summary, body, icon, urgency = sys.argv[1:]
 
@@ -16,6 +17,7 @@ try:
     # lower case initials with hashtag prefix
     summary, rn = summary.split(" - ")
     rn = '#' + ''.join([r[0] for r in rn.split(' ')]).lower()
+    rn = rn.rstrip('(')
     # Room name in italics
     summary = summary + " <i>" + rn + "</i>"
 except:
@@ -23,8 +25,11 @@ except:
 
 try:
     # Replace arbitrary items
-    for keyword, replaceword in replace.iteritems():
+    for keyword, replaceword in summary_replace.iteritems():
         summary = summary.replace(keyword, replaceword)
+
+    for keyword, replaceword in body_replace.iteritems():
+        body = body.replace(keyword, replaceword)
 
     # Replace stuff in brackets
     body = re.sub('\[.*\]', '', body)
