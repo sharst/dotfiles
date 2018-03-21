@@ -1,6 +1,7 @@
 " Map the leader key to SPACE 
 let mapleader="\<SPACE>"
 
+set encoding=utf-8      " UTF8 as default encoding
 set showcmd             " Show (partial) command in status line.
 set showmatch           " Show matching brackets.
 set showmode            " Show current mode.
@@ -36,29 +37,30 @@ set nostartofline       " Do not jump to first character with page commands.
 
 " Tell Vim which characters to show for expanded TABs,
 " trailing whitespace, and end-of-lines. VERY useful!
-if &listchars ==# 'eol:$'
-  set listchars=tab:>\ \ \ ,trail:-,extends:>,precedes:<,nbsp:+
-endif
-set list                " Show problematic characters.
-
-" Also highlight all tabs and trailing whitespace characters.
-" highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-" match ExtraWhitespace /\s\+$\|\t/
+set list listchars=tab:>\ ,trail:·,extends:>,precedes:<,nbsp:+
 
 set ignorecase          " Make searching case insensitive
 set smartcase           " ... unless the query has capital letters.
 set magic               " Use 'magic' patterns (extended regular expressions).
+set termguicolors
 
+set hidden
 
-" Use <C-L> to clear the highlighting of :set hlsearch.
-if maparg('<C-L>', 'n') ==# ''
-  nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
-endif
+"split navigations
+nnoremap <C-J> <C-W><C-J>    
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " Search and Replace
 nmap <Leader>s :%s//gc<Left><Left><Left>
 " Hit esc to clear last search highlight
 nnoremap <silent> <esc> :noh<cr><esc>
+
+" Some things I often type wrong, and I don't need editor mode
+:cabbrev W w
+:cabbrev Wq wq
+
 hi MatchParen cterm=none ctermbg=none ctermfg=darkblue
 
 " Hide file types from netrw
@@ -71,11 +73,11 @@ au BufRead,BufNewFile *.html            set filetype=htmlm4
 
 filetype plugin indent on
 let g:python_host_prog = '/usr/bin/python'
-let g:deoplete#enable_at_startup = 1
+"let g:deoplete#enable_at_startup = 1
 
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚠'
-let g:ale_lint_delay = 1000
+let g:ale_lint_delay = 300
 
 " Disable bracketing paste
 set t_BE=
@@ -88,13 +90,20 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc --
 Plug 'junegunn/fzf.vim' "corresponding vim plugin to fzf
 Plug 'hynek/vim-python-pep8-indent' "Better intentat for .py files
 Plug 'w0rp/ale'
-Plug 'lifepillar/vim-solarized8' "
+Plug 'lifepillar/vim-solarized8'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 call plug#end()
 colorscheme solarized8_dark
+"let g:solarized_use16 = 1
 
-" Open split bright or left
+" Open split right or left
 nnoremap <leader>l :vsp<CR>:Files<CR>
 nnoremap <leader>h :rightb<space>vsp<CR><C-w>h:Files<CR>
+nnoremap <leader>j :sp<CR>:Files<CR>
+
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+let python_highlight_all=1
 
 let g:jedi#show_call_signatures=0
 
