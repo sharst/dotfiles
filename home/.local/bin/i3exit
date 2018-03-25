@@ -1,6 +1,7 @@
 #!/bin/sh
+
 lock() {
-    i3lock -c 002b36 -f --ringcolor=073642ff --linecolor=ffffffff --insidecolor=002b36ff --keyhlcolor=268bd2ff --bshlcolor=dc322fff --insidevercolor=002b36ff --ringvercolor=268bd2ff --line-uses-ring --textcolor=586e75ff --insidewrongcolor=002b36ff --ringwrongcolor=dc322fff
+  i3lock -c 002b36 --ringcolor=073642ff --linecolor=ffffffff --insidecolor=002b36ff --keyhlcolor=268bd2ff --bshlcolor=dc322fff --insidevercolor=002b36ff --ringvercolor=268bd2ff --line-uses-ring --verifcolor=586e75ff --insidewrongcolor=002b36ff --ringwrongcolor=dc322fff --wrongcolor=dc322fff --veriftext='...' --radius=45 --wrongtext='!' --verifsize=10 --wrongsize=10 --ring-width=4 --noinputtext=""
 }
 
 case "$1" in
