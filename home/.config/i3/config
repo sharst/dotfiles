@@ -129,8 +129,8 @@ bindsym Mod1+a focus parent
 #bindsym Mod1+d focus child
 
 # Increase and decrease system volume
-bindsym XF86AudioRaiseVolume exec "pactl -- set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo +10%"
-bindsym XF86AudioLowerVolume exec "pactl -- set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo -10%"
+bindsym XF86AudioRaiseVolume exec "amixer -D pulse sset Master 10%+"
+bindsym XF86AudioLowerVolume exec "amixer -D pulse sset Master 10%-"
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
