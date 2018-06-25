@@ -1,0 +1,9 @@
+#!/bin/bash
+# Small script to quickly add a note to the notes folder
+FILENAME=$(echo -e "" | dmenu)
+DATE=`date '+%Y-%m-%d-%H-%M'`
+FILEPATH="~/Documents/notes"
+
+mkdir -p ${FILEPATH}
+
+terminator -e "vi $FILEPATH/${DATE}-${FILENAME}.txt"
