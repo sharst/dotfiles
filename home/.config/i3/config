@@ -140,7 +140,8 @@ bindsym XF86Display exec ~/.screenlayout/laptop.sh
 
 # Scratchpad
 bindsym Mod1+Shift+minus move scratchpad
-bindsym Mod1+minus scratchpad show
+bindsym Mod1+minus [instance="www.deezer.com"] scratchpad show
+bindsym Mod1+T [instance="todoist.com__app"] scratchpad show
 
 # switch to workspace
 bindsym Mod1+1 workspace 1
