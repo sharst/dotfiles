@@ -4,17 +4,19 @@
     markup = full
 
     format = "<b>%s</b> %b"
-    sort = yes
+    sort = no
     indicate_hidden = yes
     alignment = center
 
     bounce_freq = 0
-    show_age_threshold = 60
+    show_age_threshold = -1
     word_wrap = no
     ignore_newline = yes
+    stack_duplicates = true
+    hide_duplicate_count = true
 
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "1000x1+460-0"
+    geometry = "1400x1-400-0"
     shrink = no
 
     transparency = 100
@@ -23,7 +25,7 @@
     monitor = 0
 
     follow = none
-    sticky_history = yes
+    sticky_history = no
     history_length = 20
     show_indicators = yes
     line_height = 0
@@ -35,7 +37,10 @@
     startup_notification = false
 
     dmenu = /usr/bin/dmenu -p dunst:
-browser = /usr/bin/firefox -new-tab
+    browser = /usr/bin/firefox -new-tab
+
+[shortcuts]
+    close = mod1+n
 
 [urgency_low]
     background = "#000000"
@@ -54,3 +59,7 @@ browser = /usr/bin/firefox -new-tab
     appname = "*Chromium*"
     format = ""
     script = dunst_strip.py
+
+[fullscreen_delay_everything]
+    fullscreen = delay
+
