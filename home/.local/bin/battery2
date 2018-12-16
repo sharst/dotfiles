@@ -61,7 +61,10 @@ def get_status():
         except IndexError:
             time_left = ""
 
-        state = re.search(r": (.*), .+%", status).group(1)
+        state = re.findall(r": (.*), .+%", status)
+        state = [stat for stat in state if not stat == 'Unknown']
+        state = 'Unknown' if len(state) == 0 else state[0]
+
         percent = [int(perc) for perc in re.findall(r"(\d+)%", status)]
         percent = int(float(sum(percent)) / len(percent))
 
