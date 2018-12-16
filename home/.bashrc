@@ -1,8 +1,6 @@
 # ROS SETTINGS
 export CMAN_CONFIG_DIR=/opt/magazino/config
-export ROS_MASTER_URI=http://x250:11311
-export ROS_HOSTNAME=x250
-export ROS_LOG_DIR=$HOME/workspace/solarbot_ros/logs
+export CATKIN_WS=~/catkin_ws
 export EDITOR="nvim"
 
 # Magazino Settings
@@ -13,8 +11,13 @@ IS_ROBOT=no
 COLOR_PROMPT=yes
 
 alias vi="nvim"
-alias oh="cd $HOME/workspace/OpenHumidor/"
 alias dl="youtube-dl -x --audio-format mp3"
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 ssh-add &> /dev/null
 synclient TapButton1=0
+source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+alias jenkinsroute="ssh -L 8080:10.8.1.41:8080 t26"
+alias cal='ncal -wM -3'
+# Immediately save bash history on each command
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
