@@ -33,16 +33,17 @@ markup=none
 # The first parameter sets the step (and units to display)
 # The second parameter overrides the mixer selection
 # See the script for details.
-[volume]
-label=VOL
+#[volume]
+#label=VOL
 #label=♪
-instance=Master
+#instance=Master
 #instance=PCM
-interval=once
-signal=10
+#interval=once
+#signal=10
 
 [calendar-event]
-command=${HOME}/.local/bin/calendar-cli.py --calendar-url=whdxco/ --target_timezone=Europe/Berlin calendar agenda --timestamp-format="%H:%M" --agenda-mins=30 | tail -n 1
+#command=${HOME}/.local/bin/calendar-cli.py --calendar-url=whdxco/ --target_timezone=Europe/Berlin calendar agenda --timestamp-format="%H:%M" --agenda-mins=10 | tail -n 1
+command=${HOME}/.local/bin/calendar-cli.py --calendar-url=calendar/ --target_timezone=Europe/Berlin calendar agenda --timestamp-format="%H:%M" --agenda-mins=10 | tail -n 1
 interval=60
 color=#FF0000
 
@@ -70,7 +71,7 @@ interval=30
 
 # Date Time
 [time]
-command=date '+%m.%d. %H:%M'
+command=date '+%d.%m. %H:%M'
 interval=5
 
 # Generic media player support
