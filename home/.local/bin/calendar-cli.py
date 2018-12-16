@@ -457,7 +457,6 @@ def calendar_agenda(caldav_conn, args):
             elif hasattr(event_cal.instance, 'vevent'):
                 events__ = [ event_cal.instance.vevent ]
             else:
-                print "Error!"
                 events__ = []
 
             for event in events__:
