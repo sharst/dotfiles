@@ -129,7 +129,7 @@ bindsym XF86Display exec ~/.screenlayout/laptop.sh
 bindsym Mod1+Shift+minus move scratchpad
 bindsym Mod1+minus scratchpad show
 bindsym Mod1+T [instance="todoist.com__app"] scratchpad show
-bindsym Mod1+numbersign [instance="www.deezer.com"] scratchpad show
+bindsym Mod1+numbersign [instance="www.deezer.com"] scratchpad show, resize set 1600 1000, move position center
 bindsym Mod1+s sticky toggle
 
 # Assignments
@@ -181,10 +181,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym $left       resize grow width 10 px or 10 ppt
-        bindsym $down       resize grow height 10 px or 10 ppt
-        bindsym $up         resize shrink height 10 px or 10 ppt
-        bindsym $right      resize shrink width 10 px or 10 ppt
+        bindsym $right       resize grow width 10 px or 10 ppt
+        bindsym $down        resize grow height 10 px or 10 ppt
+        bindsym $up          resize shrink height 10 px or 10 ppt
+        bindsym $left        resize shrink width 10 px or 10 ppt
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"
