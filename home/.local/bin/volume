@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+#
+# A volume indicator for i3blocks
+
+
+from subprocess import check_output
+
+def get_symbol(name, color='white'):
+    SYMBOLS = {'MUTE': 0xf00d,
+               'VOLUME_UP': 0xf028,
+               'VOLUME_DOWN': 0xf027,
+               'VOLUME_OFF': 0xf026,
+               'CROSS': 0xf00d}
+
+    code = SYMBOLS[name]
+    return u"<span color='{}'><span font='FontAwesome'>{}</span></span>".format(color, chr(code))
+
+
+def get_status():
+    status = check_output(["amixer -D pulse sget Master | grep 'Left:' | awk -F'[][]' '{ print $2 }'"], universal_newlines=True, shell=True).strip()
+
+    try:
+        return int(status[:-1])
+    except:
+        return None
+
+text = ""
+status = get_status()
+
+if status is None:
+    text = get_symbol('CROSS', 'red')
+elif status > 100:
+    text = get_symbol('VOLUME_UP', 'red')
+elif status > 60:
+    text = get_symbol('VOLUME_UP')
+elif status > 0:
+    text = get_symbol('VOLUME_DOWN')
+else:
+    text = get_symbol('MUTE', 'red')
+
+print(text)
+
