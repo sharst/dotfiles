@@ -138,9 +138,15 @@ assign [instance="mattermost.magazino.eu"] 2
 assign [class="Firefox"] 1
 assign [class="rviz"] 4
 assign [class="Signal"] 2
+for_window [instance="www.deezer.com"] move scratchpad
+for_window [instance="todoist.com__app"] move scratchpad
 no_focus [class="Signal"]
 no_focus [class="rviz"]
 no_focus [class="Firefox"]
+
+# Autostart
+exec --no-startup-id deezer
+exec --no-startup-id todoist
 
 # switch to workspace
 bindsym Mod1+1 workspace 1
