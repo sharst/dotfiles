@@ -7,8 +7,12 @@ import os
 def message(title, message, urgency='NORMAL'):
     os.system('notify-send "{}" "{}" --urgency={}'.format(title, message, urgency))
 
-summary_replace = {' (Magazino)': ''}
-body_replace = {'magazino.hipchat.com': ''}
+summary_replace = {' (Magazino)': '',
+                   'Direct Message': ' '}
+body_replace = {'magazino.hipchat.com': '',
+                'mattermost.magazino.eu': '',
+                '@': ''}
+
 
 appname, summary, body, icon, urgency = sys.argv[1:]
 
@@ -35,5 +39,8 @@ try:
     body = re.sub('\[.*\]', '', body)
 except:
     pass
+
+# For mattermost, name is shown in body
+summary, body = body.split(':', 1)
 
 message(summary, body, urgency)
