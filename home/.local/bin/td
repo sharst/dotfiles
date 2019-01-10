@@ -1,0 +1,56 @@
+#!/usr/bin/python
+import datetime
+import os
+
+from todoist.api import TodoistAPI
+
+
+def due_date_to_dt(dt_str):
+    return datetime.datetime.strptime(dt_str, "%a %d %b %Y %H:%M:%S +%f")
+
+class TodoistInterface(object):
+    def __init__(self):
+        with open(os.path.join(os.getenv('HOME') + '/.password-store/todoist_'), 'r') as config:
+            self.api = TodoistAPI(config.read().strip())
+        self.api.sync()
+        proj_id = next(proj.data['id'] for proj in self.api.projects.all()
+                       if proj.data['name'] == "Magazino")
+        self.mag_ids = [proj.data['id'] for proj in self.api.projects.all()
+                        if proj.data['parent_id'] == proj_id]
+        self.mag_ids.append(proj_id)
+
+    def get_next(self, index):
+        today = datetime.datetime.now().replace(hour=23, minute=59, second=59)
+        items = [item for item in self.api.items.all()
+                 if item.data['project_id'] in self.mag_ids
+                 and item.data['due_date_utc'] is not None]
+        # Only items due today or before
+        items = filter(lambda item: (today - due_date_to_dt(item.data['due_date_utc'])).total_seconds() > 0,
+                       items)
+        items = sorted(items, key=lambda item: due_date_to_dt(item.data['due_date_utc']))
+        if len(items):
+            return items[index % len(items)]
+
+btn = os.environ.get('BLOCK_BUTTON', 0)
+try:
+    with open(os.path.expanduser('~/.todoistindex'), 'r') as f:
+            index = int(f.readline().strip())
+except:
+    index = 0
+
+if btn:
+    index += int(btn)
+    with open(os.path.expanduser('~/.todoistindex'), 'w') as f:
+        f.write(str(index))
+
+td = TodoistInterface()
+item = td.get_next(index)
+if item:
+    print item.data['content'].encode('ascii','ignore')
+else:
+    print "Nothing more to do!"
+
+
+
+
+
