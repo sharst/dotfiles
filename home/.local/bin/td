@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import datetime
 import os
+import shutil
 
 from todoist.api import TodoistAPI
 
@@ -10,8 +11,12 @@ def due_date_to_dt(dt_str):
 
 class TodoistInterface(object):
     def __init__(self):
+        if os.path.exists(os.path.expanduser('~/.todoist-sync')):
+            shutil.rmtree(os.path.expanduser('~/.todoist-sync'))
+
         with open(os.path.join(os.getenv('HOME') + '/.password-store/todoist_'), 'r') as config:
             self.api = TodoistAPI(config.read().strip())
+
         self.api.sync()
         proj_id = next(proj.data['id'] for proj in self.api.projects.all()
                        if proj.data['name'] == "Magazino")
