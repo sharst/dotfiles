@@ -1,0 +1,22 @@
+#!/usr/bin/python
+import subprocess
+
+def signal_colors(percent):
+    if percent < 30:
+        return "#FF00000"
+    elif percent < 50:
+        return "#FF9E00"
+    elif percent < 70:
+        return "#D4FF00"
+    elif percent < 90:
+        return "#58FF00"
+    return "#00FF00"
+
+try:
+    output = subprocess.check_output("nmcli -t -f signal,active,ssid dev wifi | egrep ':yes'", shell=True)
+    signal, _, ssid = output.strip().split(':')
+    print '<span color="{}">{}</span>'.format(signal_colors(int(signal)), ssid)
+except subprocess.CalledProcessError:
+    print ""
+
+
