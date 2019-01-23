@@ -1,1 +1,1 @@
-google-chrome --app="http://www.netflix.com" &
+google-chrome --app="https://www.netflix.com/browse?jbv=70153404&jbp=0&jbr=1" &
