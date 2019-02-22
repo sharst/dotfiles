@@ -21,3 +21,6 @@ alias cal='ncal -wM -3'
 # Immediately save bash history on each command
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+source ~/.local/bin/h.sh
+
+alias h="h 'Debug file written' 'problem' 'State completed' 'Video saved to'"
