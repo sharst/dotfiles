@@ -2,6 +2,8 @@
 # A little script to upload my JIRA tickets to todoist
 
 import os
+import time
+import shutil
 
 from jira import JIRA, JIRAError
 from todoist.api import TodoistAPI
@@ -47,6 +49,8 @@ JIRA_SERVER = "http://magazino.atlassian.net"
 
 class JiradoistSyncher(object):
     def __init__(self):
+        self.clear_temp()
+
         # Set up JIRA
         with open(password_base + 'jira_', 'r') as config:
             self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
@@ -91,6 +95,10 @@ class JiradoistSyncher(object):
     def text_from_jira_comment(self, comment):
         return comment.raw['author']['displayName'] + ": " + comment.body
 
+
+    def clear_temp(self):
+        if os.path.exists(os.path.expanduser('~/.todoist-sync')):
+            shutil.rmtree(os.path.expanduser('~/.todoist-sync'))
 
     def sync(self):
         for jql, target_project in jql_project_mapping.iteritems():
@@ -140,5 +148,7 @@ class JiradoistSyncher(object):
         print "Synched"
 
 if __name__ == '__main__':
-    td = JiradoistSyncher()
-    td.sync()
+    while True:
+	td = JiradoistSyncher()
+	td.sync()
+	time.sleep(300)
