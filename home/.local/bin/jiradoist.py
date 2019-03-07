@@ -34,12 +34,17 @@ priority_mapping = {unicode(i): min(i,4) for i in range(5)}
 
 # Mapping from JIRA status to Todoist label color
 label_colors = {u'Open': colors.GRAY, 
+                u'Committed': colors.GRAY, 
                 u'In progress': colors.SLIME,
+                u'Waiting': colors.SLIME,
                 u'To be reviewed': colors.PETROL,
-                u'Done': colors.GREEN}
+                u'Done': colors.GREEN,
+                u'Released': colors.GREEN,
+                u'To Do': colors.GRAY,
+                u'Backlog': colors.GRAY}
 
 # Map all tickets from the given JQL to the given Todoist project
-jql_project_mapping = {'filter=14700': 'Magazino JIRA'}
+jql_project_mapping = {'assignee = harst AND filter not in ("Finished Tickets")': 'Magazino JIRA'}
 
 # Where to read the configs from
 password_base = os.path.join(os.getenv('HOME') + '/.password-store/')
@@ -75,7 +80,7 @@ class JiradoistSyncher(object):
     def update_labels(self, item, issue):
         status = issue.fields.status.name
         label = self.get_or_create_label(status,
-                                         label_colors[status])['id']
+                                         label_colors.get(status, colors.GRAY))['id']
         item.update(labels=[label])
 
     def update_urgency(self, item, issue):
