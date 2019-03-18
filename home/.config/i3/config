@@ -116,8 +116,8 @@ bindsym Mod1+a focus parent
 #bindsym Mod1+d focus child
 
 # Increase and decrease system volume
-bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume 1 +10%"
-bindsym XF86AudioLowerVolume exec "pactl set-sink-volume 1 -10%"
+bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume 0 +10% && pkill -RTMIN+10 i3blocks"
+bindsym XF86AudioLowerVolume exec "pactl set-sink-volume 0 -10% && pkill -RTMIN+10 i3blocks"
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec brightness +20 # increase screen brightness

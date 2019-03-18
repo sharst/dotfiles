@@ -86,7 +86,8 @@ interval=5
 [volume]
 command=${HOME}/.local/bin/volume
 markup=pango
-interval=1
+signal=10
+interval=once
 
 # Generic media player support
 #

@@ -12,8 +12,11 @@ def get_symbol(name, color='white'):
                'VOLUME_OFF': 0xf026,
                'CROSS': 0xf00d}
 
-    code = SYMBOLS[name]
-    return u"<span color='{}'><span font='FontAwesome'>{}</span></span>".format(color, chr(code))
+    if name in SYMBOLS:
+        code = chr(SYMBOLS[name])
+    else:
+        code = name
+    return u"<span color='{}'><span font='FontAwesome'>{}</span></span>".format(color, code)
 
 
 def get_status():
@@ -27,16 +30,16 @@ def get_status():
 text = ""
 status = get_status()
 
-if status is None:
-    text = get_symbol('CROSS', 'red')
+if status is None or status == 0:
+    text = " "
+    text += get_symbol('CROSS', 'red')
+    text += " "
 elif status > 100:
-    text = get_symbol('VOLUME_UP', 'red')
-elif status > 60:
-    text = get_symbol('VOLUME_UP')
-elif status > 0:
-    text = get_symbol('VOLUME_DOWN')
+    text = get_symbol('|||||', 'red')
 else:
-    text = get_symbol('MUTE', 'red')
+    bars = int(status / 20)
+    text = get_symbol('|' * bars, 'white')
+    text += get_symbol('|' * (5-bars), 'gray')
 
 print(text)
 
