@@ -54,13 +54,14 @@ JIRA_SERVER = "http://magazino.atlassian.net"
 
 class JiradoistSyncher(object):
     def __init__(self):
-        self.clear_temp()
-
         # Set up JIRA
         with open(password_base + 'jira_', 'r') as config:
             self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
 
+        self._setup_todoist()
 
+    def _setup_todoist(self):
+        self.clear_temp()
         # Set up Todoist
         with open(password_base + 'todoist_', 'r') as config:
             self.td_api = TodoistAPI(config.read().strip())
@@ -147,10 +148,15 @@ class JiradoistSyncher(object):
                     item.delete()
                     print u"Deleting task {}".format(item.data['content'])
 
-        self.td_api.commit()
-        print "Committed"
-        self.td_api.sync()
-        print "Synched"
+        try:
+            self.td_api.commit()
+            print "Committed"
+            self.td_api.sync()
+            print "Synched"
+        except todoist.api.SyncError:
+            print "Couldn't sync, restarting connection to todoist..."
+            self._setup_todoist()
+
 
 if __name__ == '__main__':
     while True:
