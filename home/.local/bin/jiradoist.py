@@ -7,6 +7,8 @@ import shutil
 
 from jira import JIRA, JIRAError
 from todoist.api import TodoistAPI
+import todoist
+import requests
 
 from pprint import PrettyPrinter
 dt = PrettyPrinter(indent=4)
@@ -44,7 +46,9 @@ label_colors = {u'Open': colors.GRAY,
                 u'Backlog': colors.GRAY}
 
 # Map all tickets from the given JQL to the given Todoist project
-jql_project_mapping = {'assignee = harst AND filter not in ("Finished Tickets")': 'Magazino JIRA'}
+jql_project_mapping = {'assignee = harst AND filter not in ("Finished Tickets")': 'Magazino JIRA',
+        'creator = harst AND assignee = harst AND NOT filter = "Finished Tickets" ORDER BY createdDate': 'JIRA: Needs my input',
+        'project in ("PM: Fiege - Pilot", "Software development") AND assignee = harst AND NOT filter in ("Finished Tickets")': 'JIRA: Fiege'}
 
 # Where to read the configs from
 password_base = os.path.join(os.getenv('HOME') + '/.password-store/')
@@ -54,11 +58,17 @@ JIRA_SERVER = "http://magazino.atlassian.net"
 
 class JiradoistSyncher(object):
     def __init__(self):
-        # Set up JIRA
-        with open(password_base + 'jira_', 'r') as config:
-            self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
+        while True:
+            try:
+                # Set up JIRA
+                with open(password_base + 'jira_', 'r') as config:
+                    self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
 
-        self._setup_todoist()
+                self._setup_todoist()
+                break
+            except:
+                print "Setup failed, trying again in 10 s"
+                time.sleep(10)
 
     def _setup_todoist(self):
         self.clear_temp()
@@ -95,8 +105,10 @@ class JiradoistSyncher(object):
             text = self.text_from_jira_comment(comment)
             if text not in notes:
                 note = self.td_api.notes.add(item['id'], text)
-                self.td_api.commit()
                 print u"Added note to ticket {}: {}".format(issue.key, text)
+
+        self.safe_sync()
+
 
     def text_from_jira_comment(self, comment):
         return comment.raw['author']['displayName'] + ": " + comment.body
@@ -147,19 +159,21 @@ class JiradoistSyncher(object):
                 if item.data['content'].split(' ')[0] not in jira_keys:
                     item.delete()
                     print u"Deleting task {}".format(item.data['content'])
+            self.safe_sync()
 
+    def safe_sync(self):
         try:
             self.td_api.commit()
-            print "Committed"
             self.td_api.sync()
-            print "Synched"
-        except todoist.api.SyncError:
+        except todoist.api.SyncError, requests.exceptions.ConnectionError:
             print "Couldn't sync, restarting connection to todoist..."
             self._setup_todoist()
 
 
 if __name__ == '__main__':
     while True:
+        print "Starting sync"
 	td = JiradoistSyncher()
 	td.sync()
+        print "Sync done, sleeping.."
 	time.sleep(300)
