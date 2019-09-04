@@ -59,12 +59,13 @@ mode "$mode_system" {
 }
 bindsym Mod1+Shift+e mode "$mode_system"
 
-set $mode_screen Screen config (l) laptop, (t) TV, (d) dual, (e) external
+set $mode_screen Screen config (l) laptop, (t) TV, (d) dual, (e) external, (f) fiege
 mode "$mode_screen" {
     bindsym l exec ~/.screenlayout/laptop.sh, mode "default"
     bindsym t exec ~/.screenlayout/tv.sh, mode "default"
     bindsym d exec ~/.screenlayout/dual.sh, mode "default"
     bindsym e exec ~/.screenlayout/external.sh, mode "default"
+    bindsym f exec ~/.screenlayout/fiege.sh, mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -118,6 +119,7 @@ bindsym Mod1+a focus parent
 # Increase and decrease system volume
 bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume 0 +10% && pkill -RTMIN+10 i3blocks"
 bindsym XF86AudioLowerVolume exec "pactl set-sink-volume 0 -10% && pkill -RTMIN+10 i3blocks"
+bindsym XF86AudioMicMute exec "amixer set Capture toggle"
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec brightness +20 # increase screen brightness
@@ -131,6 +133,10 @@ bindsym Mod1+minus scratchpad show
 bindsym Mod1+T [instance="todoist.com__app"] scratchpad show
 bindsym Mod1+numbersign [instance="www.deezer.com"] scratchpad show, resize set 1600 1000, move position center
 bindsym Mod1+s sticky toggle
+
+bindsym Mod1+Shift+z exec "killall zoom"
+bindsym Mod1+Shift+d exec "/home/harst/catkin_ws/src/helper_scripts/log_downloader.py"
+bindsym Mod1+Shift+m exec "todoist_reminder"
 
 # Assignments
 assign [class="Thunderbird"] 2
