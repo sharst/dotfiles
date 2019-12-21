@@ -9,10 +9,16 @@ from jira import JIRA, JIRAError
 from todoist.api import TodoistAPI
 import todoist
 import requests
+from ruamel.yaml import safe_load
 
 from pprint import PrettyPrinter
 dt = PrettyPrinter(indent=4)
 
+
+config = safe_load(open('jiradoist_config.yaml'))
+
+# Mapping from JIRA priority (1-5) to todoist priority (1-4)
+priority_mapping = {unicode(i): min(i,4) for i in range(5)}
 
 # Just convenience to remember the todoist colors
 class colors:
@@ -31,9 +37,6 @@ class colors:
     BLACK = 12
 
 
-# Mapping from JIRA priority (1-5) to todoist priority (1-4)
-priority_mapping = {unicode(i): min(i,4) for i in range(5)}
-
 # Mapping from JIRA status to Todoist label color
 label_colors = {u'Open': colors.GRAY, 
                 u'Committed': colors.GRAY, 
@@ -46,34 +49,48 @@ label_colors = {u'Open': colors.GRAY,
                 u'Backlog': colors.GRAY}
 
 # Map all tickets from the given JQL to the given Todoist project
-jql_project_mapping = {'assignee = harst AND filter not in ("Finished Tickets")': 'Magazino JIRA',
-        'creator = harst AND assignee = harst AND NOT filter = "Finished Tickets" ORDER BY createdDate': 'JIRA: Needs my input',
-        'project in ("PM: Fiege - Pilot", "Software development") AND assignee = harst AND NOT filter in ("Finished Tickets")': 'JIRA: Fiege'}
+JQL_PROJECT_MAPPING = config.get('jql_project_mapping', {})
+JIRA_SERVER = config.get('jira_server_url')
+PASSWORD_BASE = os.path.expanduser(config.get('config_path', '~'))
 
-# Where to read the configs from
-password_base = os.path.join(os.getenv('HOME') + '/.password-store/')
 
-JIRA_SERVER = "http://magazino.atlassian.net"
+def search_all_issues(jira, jql_str, fields=None):
+    """
+    Extends jira.search_issues and returns not only the first 50 issues but all issues found
+    :param jira: jira.JIRA instance
+    :param jql_str: the JQL search string to use
+    :param fields: comma-separated string of issue fields to include in the results
+    :return: list of jira issues
+    """
+    issue_matches = jira.search_issues(jql_str, maxResults=100, fields=fields)
+    # maxResults seems to not be working for values higher than 100 or False, so
+    # we need to catch the issues in batches:
+    while len(issue_matches) < issue_matches.total:
+        issue_matches += (jira.search_issues(
+            jql_str, startAt=len(issue_matches), maxResults=100, fields=fields))
+    return issue_matches
 
 
 class JiradoistSyncher(object):
     def __init__(self):
         while True:
             try:
-                # Set up JIRA
-                with open(password_base + 'jira_', 'r') as config:
-                    self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
-
                 self._setup_todoist()
+                self._setup_jira()
                 break
             except:
                 print "Setup failed, trying again in 10 s"
                 time.sleep(10)
 
+    def _setup_jira(self):
+        # Set up JIRA
+        with open(os.path.join(PASSWORD_BASE + 'jira_'), 'r') as config:
+            self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
+
     def _setup_todoist(self):
         self.clear_temp()
         # Set up Todoist
-        with open(password_base + 'todoist_', 'r') as config:
+        with open(PASSWORD_BASE + 'todoist_', 'r') as config:
             self.td_api = TodoistAPI(config.read().strip())
         self.td_api.sync()
 
@@ -109,17 +126,15 @@ class JiradoistSyncher(object):
 
         self.safe_sync()
 
-
     def text_from_jira_comment(self, comment):
         return comment.raw['author']['displayName'] + ": " + comment.body
-
 
     def clear_temp(self):
         if os.path.exists(os.path.expanduser('~/.todoist-sync')):
             shutil.rmtree(os.path.expanduser('~/.todoist-sync'))
 
     def sync(self):
-        for jql, target_project in jql_project_mapping.iteritems():
+        for jql, target_project in JQL_PROJECT_MAPPING.items():
             try:
                 proj_id = next(proj.data['id']
                                for proj in self.td_api.projects.all()
@@ -129,7 +144,7 @@ class JiradoistSyncher(object):
                 continue
 
             try:
-                issues = self.jira.search_issues(jql)
+                issues = search_all_issues(self.jira, jql)
             except JIRAError:
                 print "Cannot evaluate JQL expression {}".format(jql)
                 continue
@@ -141,11 +156,11 @@ class JiradoistSyncher(object):
 
             for issue in issues:
                 if issue.key not in keys:
-                    item = self.td_api.items.add(u'{} {} {}/browse/{}'.format(issue.key,
-                                                                              issue.fields.summary,
-                                                                              JIRA_SERVER,
-                                                                              issue.key),
-                                                 proj_id)
+                    item_string = u'{} {} {}/browse/{}'.format(issue.key,
+                                                               issue.fields.summary,
+                                                               JIRA_SERVER,
+                                                               issue.key)
+                    item = self.td_api.items.add(item_string, proj_id)
                     print u"Adding task {} {}".format(issue.key, issue.fields.summary)
                     items.append(item)
                     keys.append(issue.key)
@@ -173,7 +188,7 @@ class JiradoistSyncher(object):
 if __name__ == '__main__':
     while True:
         print "Starting sync"
-	td = JiradoistSyncher()
-	td.sync()
+        td = JiradoistSyncher()
+        td.sync()
         print "Sync done, sleeping.."
-	time.sleep(300)
+        time.sleep(300)
