@@ -1,0 +1,15 @@
+#!/bin/bash
+
+~/.local/bin/pomodoro.sh -u
+
+FILE=/tmp/pomodoro-status
+if [ -f "$FILE" ]; then
+    time_finish=$(head -n 3 $FILE | tail -n 1)
+    now=$(date +%s)
+    remaining=$(( ($time_finish-$now) / 60 ))
+    if [ "$remaining" -eq "0" ]; then
+        remaining="<1"
+    fi
+    state=$(head -n 1 $FILE)
+    echo "${state} ${remaining} min"
+fi
