@@ -47,10 +47,15 @@ markup=none
 #color=#FF0000
 
 
-[todoist]
-command=${HOME}/.local/bin/td
-color=#0000FF
-interval=130
+#[pbar]
+#command=${HOME}/.local/bin/pbar
+#color=#0000FF
+#interval=100
+
+#[todoist]
+#command=${HOME}/.local/bin/td
+#color=#0000FF
+#interval=130
 
 # Network interface monitoring
 #
@@ -61,6 +66,18 @@ interval=130
 #command=nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\: -f2
 #color=#00FF00
 #interval=10
+
+
+[deezer]
+command=deezerdisplay
+interval=10
+markup=pango
+
+[pomodoro-timer]
+signal=12
+interval=1
+command=pomodoro-timer
+
 [ssid]
 command=wifi
 interval=10
@@ -80,14 +97,14 @@ interval=30
 
 # Date Time
 [time]
-command=date '+%d.%m. %H:%M'
+command=date '+%d.%m. %H:%M CW %V'
 interval=5
 
 [volume]
 command=${HOME}/.local/bin/volume
 markup=pango
 signal=10
-interval=once
+interval=10
 
 # Generic media player support
 #
