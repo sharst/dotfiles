@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # A little script to upload my JIRA tickets to todoist
 
+import datetime
 import os
 import time
 import shutil
@@ -15,10 +16,10 @@ from pprint import PrettyPrinter
 dt = PrettyPrinter(indent=4)
 
 
-config = safe_load(open('jiradoist_config.yaml'))
+config = safe_load(open(os.path.expanduser('~/.jiradoist_config.yaml')))
 
 # Mapping from JIRA priority (1-5) to todoist priority (1-4)
-priority_mapping = {unicode(i): min(i,4) for i in range(5)}
+priority_mapping = {unicode(i): min(i,4) for i in range(6)}
 
 # Just convenience to remember the todoist colors
 class colors:
@@ -37,9 +38,10 @@ class colors:
     BLACK = 12
 
 
+
 # Mapping from JIRA status to Todoist label color
-label_colors = {u'Open': colors.GRAY, 
-                u'Committed': colors.GRAY, 
+label_colors = {u'Open': colors.GRAY,
+                u'Committed': colors.GRAY,
                 u'In progress': colors.SLIME,
                 u'Waiting': colors.SLIME,
                 u'To be reviewed': colors.PETROL,
@@ -48,10 +50,11 @@ label_colors = {u'Open': colors.GRAY,
                 u'To Do': colors.GRAY,
                 u'Backlog': colors.GRAY}
 
-# Map all tickets from the given JQL to the given Todoist project
 JQL_PROJECT_MAPPING = config.get('jql_project_mapping', {})
 JIRA_SERVER = config.get('jira_server_url')
+JIRA_KEYFILE = config.get('jira_keyfile')
 PASSWORD_BASE = os.path.expanduser(config.get('config_path', '~'))
+SYNC_EVERY = config.get('sync_every', 300)
 
 
 def search_all_issues(jira, jql_str, fields=None):
@@ -71,28 +74,40 @@ def search_all_issues(jira, jql_str, fields=None):
     return issue_matches
 
 
+JIRA.DEFAULT_OPTIONS['server'] = JIRA_SERVER
+
+
 class JiradoistSyncher(object):
     def __init__(self):
         while True:
             try:
-                self._setup_todoist()
                 self._setup_jira()
+                self._setup_todoist()
                 break
-            except:
+            except Exception as e:
                 print "Setup failed, trying again in 10 s"
+                print e
                 time.sleep(10)
 
     def _setup_jira(self):
-        # Set up JIRA
-        with open(os.path.join(PASSWORD_BASE + 'jira_'), 'r') as config:
-            self.jira = JIRA(JIRA_SERVER, basic_auth=config.read().strip().split(','))
+        with open(os.path.join(PASSWORD_BASE, 'jira_'), 'r') as config:
+            access_token, access_token_secret = config.read().strip().split(',')
+
+        with open(os.path.join(PASSWORD_BASE, JIRA_KEYFILE), 'r') as keyf:
+            key_cert = keyf.read()
+
+        oauth_dict = {'access_token': access_token,
+                'access_token_secret': access_token_secret,
+                'consumer_key': 'jira-api-tests',
+                'key_cert': key_cert}
+        self.jira = JIRA(oauth=oauth_dict)
 
     def _setup_todoist(self):
         self.clear_temp()
         # Set up Todoist
-        with open(PASSWORD_BASE + 'todoist_', 'r') as config:
+        with open(os.path.join(PASSWORD_BASE, 'todoist_'), 'r') as config:
             self.td_api = TodoistAPI(config.read().strip())
-        self.td_api.sync()
+        self.safe_sync()
 
     def get_or_create_label(self, text, color):
         label = next((label for label in self.td_api.labels.all()
@@ -124,8 +139,6 @@ class JiradoistSyncher(object):
                 note = self.td_api.notes.add(item['id'], text)
                 print u"Added note to ticket {}: {}".format(issue.key, text)
 
-        self.safe_sync()
-
     def text_from_jira_comment(self, comment):
         return comment.raw['author']['displayName'] + ": " + comment.body
 
@@ -134,7 +147,8 @@ class JiradoistSyncher(object):
             shutil.rmtree(os.path.expanduser('~/.todoist-sync'))
 
     def sync(self):
-        for jql, target_project in JQL_PROJECT_MAPPING.items():
+        for jql, target_project in JQL_PROJECT_MAPPING.iteritems():
+            print "Synching {} <-- {}".format(target_project, jql)
             try:
                 proj_id = next(proj.data['id']
                                for proj in self.td_api.projects.all()
@@ -156,11 +170,11 @@ class JiradoistSyncher(object):
 
             for issue in issues:
                 if issue.key not in keys:
-                    item_string = u'{} {} {}/browse/{}'.format(issue.key,
-                                                               issue.fields.summary,
-                                                               JIRA_SERVER,
-                                                               issue.key)
-                    item = self.td_api.items.add(item_string, proj_id)
+                    item = self.td_api.items.add(u'{} {} {}/browse/{}'.format(issue.key,
+                                                                              issue.fields.summary,
+                                                                              JIRA_SERVER,
+                                                                              issue.key),
+                                                 project_id=proj_id)
                     print u"Adding task {} {}".format(issue.key, issue.fields.summary)
                     items.append(item)
                     keys.append(issue.key)
@@ -179,16 +193,19 @@ class JiradoistSyncher(object):
     def safe_sync(self):
         try:
             self.td_api.commit()
+            print "Committed.."
             self.td_api.sync()
-        except todoist.api.SyncError, requests.exceptions.ConnectionError:
+            print "...aaand synched!"
+        except (todoist.api.SyncError, requests.exceptions.ConnectionError) as e:
             print "Couldn't sync, restarting connection to todoist..."
+            print e
             self._setup_todoist()
 
 
 if __name__ == '__main__':
     while True:
-        print "Starting sync"
+        print datetime.datetime.now().strftime("%d.%m. %H:%M") + " Starting sync"
         td = JiradoistSyncher()
         td.sync()
-        print "Sync done, sleeping.."
-        time.sleep(300)
+        print datetime.datetime.now().strftime("%d.%m. %H:%M") + " Sync done, sleeping 5min"
+        time.sleep(SYNC_EVERY)
