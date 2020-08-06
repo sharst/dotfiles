@@ -1,6 +1,6 @@
 # ROS SETTINGS
 export CMAN_CONFIG_DIR=/opt/magazino/config
-export CATKIN_WS=~/catkin_ws
+export CATKIN_WS=$HOME/catkin_ws
 export EDITOR="nvim"
 
 # Magazino Settings
