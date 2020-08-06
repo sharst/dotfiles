@@ -57,6 +57,8 @@ nmap <Leader>s :%s//gc<Left><Left><Left>
 " Hit esc to clear last search highlight
 nnoremap <silent> <esc> :noh<cr><esc>
 
+nnoremap <silent> <Leader>b :TagbarToggle<CR>
+
 " Some things I often type wrong, and I don't need editor mode
 :cabbrev W w
 :cabbrev Wq wq
@@ -89,9 +91,11 @@ Plug 'zchee/deoplete-jedi'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all --no-update-rc --no-completion' } "FZF command line tool
 Plug 'junegunn/fzf.vim' "corresponding vim plugin to fzf
 Plug 'hynek/vim-python-pep8-indent' "Better intentat for .py files
-Plug 'w0rp/ale'
+"Plug 'dense-analysis/ale'
 Plug 'lifepillar/vim-solarized8'
+Plug 'majutsushi/tagbar'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+Plug 'fisadev/vim-isort'
 call plug#end()
 colorscheme solarized8_dark
 "let g:solarized_use16 = 1
@@ -103,6 +107,8 @@ nnoremap <leader>j :sp<CR>:Files<CR>
 
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+let g:vim_isort_map = '<C-i>'
+
 let python_highlight_all=1
 
 let g:jedi#show_call_signatures=0
