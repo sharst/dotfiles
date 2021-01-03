@@ -108,7 +108,7 @@ bindsym Mod1+v split v
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym Mod1+w layout tabbed
-bindsym Mod1+e layout toggle split
+#bindsym Mod1+e layout toggle split
 
 # toggle tiling / floating
 bindsym Mod1+Shift+space floating toggle
@@ -137,12 +137,12 @@ bindsym XF86Display exec ~/.screenlayout/laptop.sh
 bindsym Mod1+Shift+minus move scratchpad
 bindsym Mod1+minus scratchpad show
 bindsym Mod1+T [instance="todoist.com__app"] scratchpad show
+bindsym Mod1+e [instance="www.evernote.com__client_web"] scratchpad show, resize set 1870 1030, move position center
 bindsym Mod1+numbersign [instance="www.deezer.com"] scratchpad show, resize set 1600 1000, move position center
 bindsym Mod1+i [class="X-terminal-emulator"] scratchpad show
 bindsym Mod1+s sticky toggle
 
 bindsym Mod1+Shift+z exec "killall zoom"
-bindsym Mod1+Shift+d exec "/home/harst/catkin_ws/src/helper_scripts/log_downloader.py"
 bindsym Mod1+Shift+m exec "todoist_reminder"
 
 # Assignments
@@ -153,6 +153,7 @@ assign [class="rviz"] 4
 assign [class="Signal"] 2
 for_window [instance="www.deezer.com"] move scratchpad
 for_window [instance="todoist.com__app"] move scratchpad
+for_window [instance="www.evernote.com__client_web"] move scratchpad
 no_focus [class="Signal"]
 no_focus [class="rviz"]
 no_focus [class="Firefox"]
@@ -160,6 +161,7 @@ no_focus [class="Firefox"]
 # Autostart
 exec --no-startup-id deezer
 exec --no-startup-id todoist
+exec --no-startup-id evernote
 exec --no-startup-id syncthing -no-browser -home="/home/harst/.config/syncthing"
 
 # switch to workspace

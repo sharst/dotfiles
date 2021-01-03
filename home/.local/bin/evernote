@@ -1,0 +1,1 @@
+chromium-browser --app="https://www.evernote.com/client/web?login=true" &
