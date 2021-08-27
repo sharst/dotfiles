@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cat ~/.tempo-tickets.txt | dmenu -i | xdotool type --clearmodifiers --file -
