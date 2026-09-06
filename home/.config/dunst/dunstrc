@@ -11,13 +11,18 @@
     bounce_freq = 0
     show_age_threshold = -1
     word_wrap = no
+    ellipsize = end
     ignore_newline = yes
     stack_duplicates = true
     hide_duplicate_count = true
 
-    # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "1400x1-400-0"
+    width = (0, 1344)
+    height = 19
+    origin = bottom-center
+    offset = 0x0
     shrink = no
+
+    icon_position = off
 
     transparency = 100
     idle_threshold = 120
